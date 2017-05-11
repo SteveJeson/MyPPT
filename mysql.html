@@ -48,61 +48,291 @@
                 </p>
             </section>
 
-            <section data-background="#dddddd">
-                <ol>
-                    <li>Mysql基础</li>
-                    <li>Mysql视图</li>
-                    <li>Mysql索引</li>
-                    <li>Mysql优化</li>
-                    <li>我踩过的坑</li>
-                </ol>
+            <section data-transition="slide" data-background="#87CEFA" data-background-transition="zoom">
+                <section><h2>Mysql基础</h2></section>
+                <section>
+                    <h4>数据类型</h4>
+                    <ul>
+                        <li class="fragment">数值类型</li>
+                        <div class="fragment">
+                            <img src="css/整数类型.png"/><br>
+                            INTEGER同INT
+                        </div>
+                        <div class="fragment" style="font-size: 20px;">
+                            <span>DECIMAL(M,D)，FLOAT(M,D)，DOUBLE PRECISION(M,D)，REAL(M,D)</span>
+                            <p>
+                                M的取值范围为1~65，取0时会被设为默认值，超出范围会报错
+                                D的取值范围为0~30，而且必须<=M，超出范围会报错
+                            </p>
+                        </div>
+                    </ul>
+                </section>
+                <section>
+                    <ul>
+                        <li>字符串类型
+                        <div>
+                            <span>CHAR、VARCHAR、BLOB、TEXT、ENUM和SET</span>
+                            <img src="css/varchar.png"/>
+                        </div>
+                        </li>
+
+                    </ul>
+                </section>
+                <section>
+                    <ul>
+                        <li class="fragment">日期时间类型
+                        <div class="fragment">
+                            <img src="css/date.png"/><br>
+                        </div>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h4>事务</h4>
+                    <div style="font-size: 20px;">
+                        <p>
+                            MySQL 事务主要用于处理操作量大，复杂度高的数据。比如说，在人员管理系统中，你删除一个人员，你即需要删除人员的基本资料，也要删除和该人员相关的信息，如信箱，文章等等，这样，这些数据库操作语句就构成一个事务！
+                            在 MySQL 中只有使用了 Innodb 数据库引擎的数据库或表才支持事务。事务处理可以用来维护数据库的完整性，保证成批的 SQL 语句要么全部执行，要么全部不执行。
+                        </p>
+                        <ol>
+                            <li>事务的原子性：一组事务，要么成功；要么撤回。</li>
+                            <li>稳定性 ：有非法数据（外键约束之类），事务撤回。</li>
+                            <li>隔离性：事务独立运行。一个事务处理后的结果，影响了其他事务，那么其他事务会撤回。</li>
+                            <li>可靠性：软、硬件崩溃后，InnoDB数据表驱动会利用日志文件重构修改。可靠性和高速度不可兼得， innodb_flush_log_at_trx_commit 选项决定什么时候吧事务保存到日志里。</li>
+                        </ol>
+                        <p>
+                            在 MySQL 命令行的默认设置下，事务都是自动提交的，即执行 SQL 语句后就会马上执行 COMMIT 操作。因此要显示地开启一个事务须使用命令 BEGIN 或 START TRANSACTION，或者执行命令 SET AUTOCOMMIT=0，用来禁止使用当前会话的自动提交。
+                        </p>
+                    </div>
+                </section>
+                <section>
+                    <h4>完整性约束</h4>
+                </section>
+                <section>
+                    <h4>主键约束</h4>
+                    <pre><code class="hljs" style="font-size: 10px;height: 150px;" data-trim contenteditable>
+                        一个字段作为主键
+                    CREATE TABLE employees (
+                        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(20) NOT NULL,
+                        deptId INT(3) NOT NULL,
+                        salary FLOAT NOT NULL
+                    );
+					</code></pre>
+                    <pre><code class="hljs" style="font-size: 10px;height: 150px;" data-trim contenteditable>
+                        多个字段组合作为主键
+                    CREATE TABLE employees (
+                    name VARCHAR(20) NOT NULL,
+                    deptId INT(3) NOT NULL,
+                    salary FLOAT NOT NULL,
+                    PRIMARY KEY(name, deptId)
+                    );
+					</code></pre>
+                    <pre><code class="hljs" style="font-size: 10px;height: 150px;" data-trim contenteditable>
+                        先建表，再添加约束
+                    CREATE TABLE employees (
+                    name VARCHAR(20) NOT NULL,
+                    deptId INT(3) NOT NULL,
+                    salary FLOAT NOT NULL,
+                    );
+                    ALTER TABLE employees ADD CONSTRAINT emp_pk PRIMARY KEY(name, deptId);
+					</code></pre>
+                </section>
+                <section>
+                    <h4>唯一约束</h4>
+                    <pre><code class="hljs" data-trim contenteditable>
+                        唯一性约束（Unique Constraint）要求表里某个字段的值在每条记录里都是唯一的，
+                        声明为 UNIQUE 的字段允许为空，但只能出现一个空值。
+                       CREATE TABLE department(
+                        deptId INT(3) PRIMARY KEY,
+                        name VARCHAR(20),
+                        location VARCHAR(50),
+                        UNIQUE(name)
+                        );
+					</code></pre>
+                </section>
+                <section>
+                    <h4>外键约束</h4>
+                    <pre><code class="hljs" data-trim contenteditable>
+                        外键（Foreign Key）：首先它是表中的一个字段，它可以不是本表的主键，
+                        但必须对应另外一个表的主键。外键可以为空值，若不为空值，则每一个外键值
+                        必须等于另一个表中主键的某个值。外键约束是确保表与表之间引用完整性的
+                        主要机制。一个表可以有一个或多个外键。
+                        通常，我们把外键所在的表称为子表，外键所引用的表称为父表
+                        CREATE TABLE employees(
+                        id INT(11) PRIMARY KEY,
+                        name VARCHAR(20) NOT NULL,
+                        deptId INT(3) NOT NULL,
+                        salary FLOAT NOT NULL,
+                        CONSTRAINT emp_fk FOREIGN KEY(deptId) REFERENCES department(deptId)
+                        );
+                        ALTER TABLE employees ADD CONSTRAINT emp_fk FOREIGN KEY(deptId) REFERENCES department(deptId);
+					</code></pre>
+                </section>
+                <section>
+                    <h4>非空约束</h4>
+                    <pre><code class="hljs" data-trim contenteditable>
+                        非空约束（Not Null Constraint）指字段的值不能为空。对于使用了
+                        NOT NULL 约束的字段，如果用户在添加数据时没有指定值，数据库系统会报错。
+                        CREATE TABLE employees (
+                        id INT(11) PRIMARY KEY,
+                        name VARCHAR(20),
+                        deptId INT(3),
+                        salary FLOAT
+                        );
+                        ALTER TABLE employees MODIFY name varchar(20) NOT NULL;
+                        ALTER TABLE employees MODIFY name varchar(20) DEFAULT 'abc';
+					</code></pre>
+                </section>
+                <section>
+                    <h4>运算符</h4>
+                    <ul>
+                        <li>算数运算符
+                            <div style="font-size: 20px;">用于各类数值运算。包括加(+)、减(-)、乘(*)、除(/)、求于(或称模运算,%)。</div>
+                        </li>
+                        <li>比较运算符
+                            <div style="font-size: 20px;">
+                                用于比较运算。包括大于(>)、小于(<)、等于(=)、大于等于(>=)、小于等于(<=)、不等于(!=)、
+                                以及IN、BETWEEN AND、IS NULL等。
+                            </div>
+                        </li>
+                        <li>逻辑运算符
+                            <div style="font-size: 20px;">
+                                逻辑运算符的求值所得结果均为1(TRUE)、0(FALSE)，这类运算符有逻辑非（NOT或者!）、逻辑与（AND或者&&）、逻辑或（OR或者||）等。
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h4>常用函数</h4>
+                    <ol>
+                        <li>数学函数</li>
+                        <li>聚合函数</li>
+                        <li>字符串函数</li>
+                        <li>日期时间函数</li>
+                        <li>控制流函数</li>
+                        <li>格式化函数</li>
+                    </ol>
+                </section>
+                <section>
+                    <h4>数学函数</h4>
+                    <ul style="font-size: 20px;">
+                        <li>ROUND(x,y)返回参数x的四舍五入的有y位小数的值</li>
+                        <li>ABS(x)   返回x的绝对值</li>
+                        <li>BIN(x)   返回x的二进制（OCT返回八进制，HEX返回十六进制）</li>
+                        <li>CEILING(x)   返回大于x的最小整数值</li>
+                        <li>EXP(x)   返回值e（自然对数的底）的x次方</li>
+                        <li>FLOOR(x)   返回小于x的最大整数值</li>
+                        <li>GREATEST(x1,x2,...,xn)返回集合中最大的值</li>
+                        <li>LEAST(x1,x2,...,xn)      返回集合中最小的值</li>
+                        <li>LN(x)                    返回x的自然对数</li>
+                        <li>LOG(x,y)返回x的以y为底的对数</li>
+                        <li>MOD(x,y)                 返回x/y的模（余数）</li>
+                        <li>RAND()返回０到１内的随机值,可以通过提供一个参数(种子)使RAND()随机数生成器生成一个指定的值</li>
+                    </ul>
+                </section>
+                <section>
+                    <h4>聚合函数</h4>
+                    <ul style="font-size: 20px;">
+                        <li>AVG(col)返回指定列的平均值</li>
+                        <li>COUNT(col)返回指定列中非NULL值的个数</li>
+                        <li>MIN(col)返回指定列的最小值</li>
+                        <li> MAX(col)返回指定列的最大值</li>
+                        <li>SUM(col)返回指定列的所有值之和</li>
+                    </ul>
+                </section>
+                <section>
+                <h4>字符串函数</h4>
+                <ul style="font-size: 20px;">
+                    <li>CONCAT(s1,s2...,sn)将s1,s2...,sn连接成字符串</li>
+                    <li>LENGTH(s)返回字符串str中的字符数</li>
+                    <li>TRIM(str)去除字符串首部和尾部的所有空格</li>
+                    <li>...</li>
+                </ul>
+                </section>
+                <section>
+                    <h4>日期时间函数</h4>
+                    <ul style="font-size: 20px;">
+                        <li>DAYOFWEEK(date)  返回date所代表的一星期中的第几天(1~7)</li>
+                        <li>DAYOFMONTH(date) 返回date是一个月的第几天(1~31)</li>
+                        <li>DAYOFYEAR(date)  返回date是一年的第几天(1~366)</li>
+                        <li>NOW() 返回当前的日期和时间</li>
+                        <li>...</li>
+                    </ul>
+                </section>
+                <section>
+                    <h4>控制流函数</h4>
+                    <pre><code class="hljs" data-trim contenteditable>
+                        CASE [expression to be evaluated]
+                        WHEN [val 1] THEN [result 1]
+                        WHEN [val 2] THEN [result 2]
+                        WHEN [val 3] THEN [result 3]
+                        ......
+                        WHEN [val n] THEN [result n]
+                        ELSE [default result]
+                        END
+					</code></pre>
+                </section>
+                <section>
+                    <h4>格式化函数</h4>
+                    <ul style="font-size: 20px;">
+                        <li>DATE_FORMAT(date,fmt)  依照字符串fmt格式化日期date值</li>
+                        <li>FORMAT(x,y) 把x格式化为以逗号隔开的数字序列，y是结果的小数位数</li>
+                        <li>...</li>
+                    </ul>
+                </section>
+                <section>
+                    <h4>sql执行顺序</h4>
+                    <div align="left">
+                        <img src="css/sqlorder.png"/>
+                    </div>
+                    <div style="font-size: 15px;">
+                        <ol>
+                            <li>FROM: 对FROM的左边的表和右边的表计算笛卡尔积。产生虚表VT1</li>
+                            <li>ON: 对虚表VT1进行ON筛选，只有那些符合<join-condition>的行才会被记录在虚表VT2中。</li>
+                            <li>JOIN： 如果指定了OUTER JOIN（比如left join、 right join）那么保留表中未匹配的行就会作为外部行添加到虚拟表VT2中，
+                                产生虚拟表VT3,from子句中包含两个以上的表的话，那么就会对上一个join连接产生的结果VT3和下一个表重复执行步骤1~3这三个步骤，一直到处理完所有的表为止。</li>
+                            <li>WHERE： 对虚拟表VT3进行WHERE条件过滤。只有符合<where-condition>的记录才会被插入到虚拟表VT4中。</li>
+                            <li>GROUP BY: 根据group by子句中的列，对VT4中的记录进行分组操作，产生VT5.</li>
+                            <li>CUBE | ROLLUP: 对表VT5进行cube或者rollup操作，产生表VT6.</li>
+                            <li>HAVING： 对虚拟表VT6应用having过滤，只有符合<having-condition>的记录才会被 插入到虚拟表VT7中。</li>
+                            <li>SELECT： 执行select操作，选择指定的列，插入到虚拟表VT8中。</li>
+                            <li>DISTINCT： 对VT8中的记录进行去重。产生虚拟表VT9.</li>
+                            <li>ORDER BY: 将虚拟表VT9中的记录按照<order_by_list>进行排序操作，产生虚拟表VT10.</li>
+                            <li>LIMIT：取出指定行的记录，产生虚拟表VT11, 并将结果返回。</li>
+                        </ol>
+                    </div>
+                </section>
+                </section>
             </section>
 
             <section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
-                <section><h2>Mysql基础</h2></section>
-                <section>
-                    <ol>
-                        <li><h4>数据类型</h4>
-                            <ul class="fragment">
-                                <li>数值类型</li>
-                                <li>日期类型</li>
-                            </ul>
-                        </li>
-                        <li class="fragment">事务</li>
-                        <li class="fragment">完整性约束</li>
-                        <li class="fragment">基本语法</li>
-                        <li class="fragment">sql执行顺序</li>
-                        <li class="fragment">运算符</li>
-                        <li class="fragment">常用函数</li>
-                    </ol>
-                </section>
-            </section>
-
-            <section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
-                <section>
-                    <h2>Mysql视图</h2>
-                </section>
-            </section>
-
-            <section data-transition="slide" data-background="#9370DB" data-background-transition="zoom">
-                <section><h2>Mysql索引</h2></section>
-            </section>
-
-            <section data-transition="slide" data-background="#87CEFA" data-background-transition="zoom">
-                <section><h2>Mysql优化</h2></section>
+                <h2>Mysql优化</h2>
+                <div>参考：</div>
+                <a href="https://juejin.im/entry/575620b1128fe10056efc166">https://juejin.im/entry/575620b1128fe10056efc166</a>
+                <a href="https://juejin.im/entry/590a973561ff4b00698921b8">https://juejin.im/entry/590a973561ff4b00698921b8</a>
             </section>
             <section data-transition="slide" data-background="#3CB371" data-background-transition="zoom">
-                <section><h2>我踩过的坑</h2></section>
+                <section><h2>一些问题</h2></section>
+                <section>
+                    <h4>乱码</h4>
+                </section>
+                <section>
+                    <h4>死锁</h4>
+                </section>
+                <section>
+                    <h4>sql注入</h4>
+                </section>
             </section>
 
             <!-- Example of nested vertical slides -->
 
             <section>
-                <section><h1>THE END</h1></section>
+                <section><h1>结束啦！去<a href="https://juejin.im/">掘金</a></h1></section>
             </section>
 
+            </section>
         </div>
-
     </div>
 
     <script src="lib/js/head.min.js"></script>
