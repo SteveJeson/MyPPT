@@ -42,7 +42,6 @@
         <div class="slides">
             <section>
                 <h1>Mysql</h1>
-                <h2>轻量级数据库</h2>
                 <p>
                     <small>Created by <a href="https://github.com/SteveJeson">Steve Jason</a></small>
                 </p>
@@ -257,6 +256,9 @@
                         <li>DAYOFMONTH(date) 返回date是一个月的第几天(1~31)</li>
                         <li>DAYOFYEAR(date)  返回date是一年的第几天(1~366)</li>
                         <li>NOW() 返回当前的日期和时间</li>
+						<li>DATEDIFF(BUSINESS_END_DATE,now())</li>
+						<li>TIME_TO_SEC 获取时间秒数(不包含年月日)</li>
+						<li>TIMESTAMPDIFF 时间秒相减(包含年月日)</li>
                         <li>...</li>
                     </ul>
                 </section>
@@ -303,7 +305,221 @@
                         </ol>
                     </div>
                 </section>
+                <section>
+                    <pre><code class="hljs" data-trim contenteditable>
+                      SELECT
+                      HR_UNID AS hrUnid,
+                      HR_UUID AS hrUuid,
+                      HR_CDATE AS hrCdate,
+                      HR_UDATE AS hrUdate,
+                      HR_CUSR AS hrCusr,
+                      HR_ACCOUNTUUID AS hrAccountuuid,
+                      HR_DEPTUUID AS hrDeptuuid,
+                      HR_COMNAME AS hrComname,
+                      HR_DEPTNAME AS hrDeptname,
+                      HR_NAME AS hrName,
+                      HR_POST AS hrPost,
+                      HR_IDCARD AS hrIdcard,
+                      HR_MOBILE AS hrMobile,
+                      HR_BIRTHDAY AS hrBirthday,
+                      HR_SEX AS hrSex,
+                      HR_INDATE AS hrIndate,
+                      HR_SDATE AS hrSdate,
+                      HR_EDATE AS hrEdate,
+                      HR_EDU AS hrEdu,
+                      HR_NATION AS hrNation,
+                      HR_ADDRESS AS hrAddress,
+                      HR_MAIL AS hrMail,
+                      HR_QQ AS hrQq,
+                      HR_WXCODE AS hrWxcode,
+                      HR_STATUS AS hrStatus,
+                      HR_REMARK AS hrRemark,
+                      HR_COMUUID AS hrComuuid,
+                      HR_HEADER AS hrHeader,
+                      HR_DES AS hrDes,
+                      HR_MAC AS hrMac,
+                      HR_LEAVES AS hrLeaves,
+                      HR_FWORKTIME AS hrFworktime,
+                      HR_WORK_ORG_UUID AS hrWorkOrgUuid,
+                      HR_WORK_LEAVE AS hrWorkLeave,
+                      HR_INCOME_LEAVE AS hrIncomeLeave,
+                      (SELECT
+                        SUM(
+                          CASE
+                            WHEN (
+                              TIME_TO_SEC(cc.beginWork) - TIME_TO_SEC("09:00")
+                            ) > 0
+                            THEN FORMAT(
+                              (
+                                TIME_TO_SEC(cc.beginWork) - TIME_TO_SEC("09:00")
+                              ) / 60,
+                              0
+                            )
+                            ELSE 0
+                          END
+                        )
+                      FROM
+                        (SELECT
+                          t.beginWork AS beginWork,
+                          t.attendanceCusr
+                        FROM
+                          (SELECT
+                            DATE_FORMAT(
+                              CASE
+                                WHEN ATTENDANCE_TYPE = '1'
+                                THEN ATTENDANCE_TIME
+                                ELSE NULL
+                              END,
+                              '%H:%i'
+                            ) AS beginWork,
+                            ATTENDANCE_DATE AS attendanceDate,
+                            ATTENDANCE_CUSR AS attendanceCusr,
+                            ATTENDANCE_PERSON AS attendancePerson
+                          FROM
+                            BSZB_ATTENDANCE
+                          WHERE DATE_FORMAT(ATTENDANCE_DATE, '%Y-%m-%d') BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+                            AND DATE_FORMAT(?, '%Y-%m-%d')
+                          ORDER BY ATTENDANCE_TIME ASC) t
+                        GROUP BY DATE_FORMAT(t.attendanceDate, '%Y-%m-%d'),
+                          t.attendanceCusr) cc
+                      GROUP BY cc.attendanceCusr
+                      HAVING cc.attendanceCusr = HR_ACCOUNTUUID) AS extParam4,
+                      (SELECT
+                        SUM(
+                          CASE
+                            WHEN (
+                              TIME_TO_SEC("17:30") - TIME_TO_SEC(cc.endWork)
+                            ) >= 0
+                            THEN FORMAT(
+                              (
+                                TIME_TO_SEC("17:30") - TIME_TO_SEC(cc.endWork)
+                              ) / 60,
+                              0
+                            )
+                            ELSE 0
+                          END
+                        )
+                      FROM
+                        (SELECT
+                          t.endWork AS endWork,
+                          t.attendanceCusr
+                        FROM
+                          (SELECT
+                            DATE_FORMAT(
+                              CASE
+                                WHEN ATTENDANCE_TYPE = '2'
+                                THEN ATTENDANCE_TIME
+                                ELSE NULL
+                              END,
+                              '%H:%i'
+                            ) AS endWork,
+                            DATE_FORMAT(ATTENDANCE_DATE, '%Y-%m-%d') AS attendanceDate,
+                            ATTENDANCE_CUSR AS attendanceCusr,
+                            ATTENDANCE_PERSON AS attendancePerson
+                          FROM
+                            BSZB_ATTENDANCE
+                          WHERE DATE_FORMAT(ATTENDANCE_DATE, '%Y-%m-%d') BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+                            AND DATE_FORMAT(?, '%Y-%m-%d')
+                          ORDER BY ATTENDANCE_TIME DESC) t
+                        WHERE t.endWork IS NOT NULL
+                        GROUP BY attendanceDate,
+                          attendanceCusr) cc
+                      GROUP BY cc.attendanceCusr
+                      HAVING cc.attendanceCusr = HR_ACCOUNTUUID) AS extParam5,
+                      (SELECT
+                        SUM(b.OVER_TIME_PERIOD)
+                      FROM
+                        BSZB_OVER_TIME b,
+                        wf_engine w
+                      WHERE w.WFENGINE_ITEMUUID = b.OVER_TIME_UUID
+                        AND w.WFENGINE_WORKFLOWSTATUS = 'FINISH'
+                        AND DATE_FORMAT(
+                          b.OVER_TIME_BEGIN_DATE,
+                          '%Y-%m-%d'
+                        ) BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+                        AND DATE_FORMAT(?, '%Y-%m-%d')
+                        AND DATE_FORMAT(
+                          b.OVER_TIME_END_DATE,
+                          '%Y-%m-%d'
+                        ) BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+                        AND DATE_FORMAT(?, '%Y-%m-%d')
+                      GROUP BY b.OVERTIME_CUSR
+                      HAVING b.OVERTIME_CUSR = HR_ACCOUNTUUID) AS extParam1,
+                      (SELECT
+                        SUM(b.LEAVE_PERIOD)
+                      FROM
+                        BSZB_LEAVE b,
+                        wf_engine w
+                      WHERE w.WFENGINE_ITEMUUID = b.LEAVE_UUID
+                        AND w.WFENGINE_WORKFLOWSTATUS = 'FINISH'
+                        AND (
+                          DATE_FORMAT(b.LEAVE_BEGIN_DATE, '%Y-%m-%d') BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+                          AND DATE_FORMAT(?, '%Y-%m-%d')
+                        )
+                        AND (
+                          DATE_FORMAT(b.LEAVE_END_DATE, '%Y-%m-%d') BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+                          AND DATE_FORMAT(?, '%Y-%m-%d')
+                        )
+                      GROUP BY b.LEAVE_CUSR
+                      HAVING b.LEAVE_CUSR = HR_ACCOUNTUUID) AS extParam2,
+                      IFNULL(
+                        (SELECT
+                          SUM(b.LEAVE_PERIOD)
+                        FROM
+                          BSZB_LEAVE b,
+                          wf_engine w
+                        WHERE w.WFENGINE_ITEMUUID = b.LEAVE_UUID
+                          AND w.WFENGINE_WORKFLOWSTATUS = 'FINISH'
+                          AND b.LEAVE_TYPE = '3'
+                          AND (
+                            DATE_FORMAT(b.LEAVE_BEGIN_DATE, '%Y-%m-%d') BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+                            AND DATE_FORMAT(?, '%Y-%m-%d')
+                          )
+                          AND (
+                            DATE_FORMAT(b.LEAVE_END_DATE, '%Y-%m-%d') BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+                            AND DATE_FORMAT(?, '%Y-%m-%d')
+                          )
+                        GROUP BY b.LEAVE_CUSR
+                        HAVING b.LEAVE_CUSR = HR_ACCOUNTUUID),
+                        0
+                      ) AS extParam6,
+                      (SELECT
+                        SUM(
+                          HOUR(
+                            TIMEDIFF(OUT_END_DATE, OUT_BEGIN_DATE)
+                          )
+                        )
+                      FROM
+                        BSZB_OUT b,
+                        wf_engine w
+                      WHERE w.WFENGINE_ITEMUUID = b.OUT_UUID
+                        AND w.WFENGINE_WORKFLOWSTATUS = 'FINISH'
+                        AND DATE_FORMAT(b.OUT_BEGIN_DATE, '%Y-%m-%d') BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+                        AND DATE_FORMAT(?, '%Y-%m-%d')
+                        AND DATE_FORMAT(b.OUT_END_DATE, '%Y-%m-%d') BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+                        AND DATE_FORMAT(?, '%Y-%m-%d')
+                      GROUP BY b.OUT_CUSR
+                      HAVING b.OUT_CUSR = HR_ACCOUNTUUID) AS extParam3
+                    FROM
+                      BSZB_HR b
+                      LEFT JOIN core_account ca
+                        ON b.HR_ACCOUNTUUID = ca.CRACT_UUID
+                      JOIN core_account_organiz co
+                        ON ca.CRACT_UUID = co.CRAMO_CRACT_UUID
+                      JOIN core_organization c
+                        ON b.HR_DEPTUUID = c.CRORG_UUID
+                    WHERE HR_STATUS = ?
+                    GROUP BY b.HR_UUID
+                    ORDER BY c.CRORG_ORD,
+                      c.CRORG_LEVEL_CODE,
+                      co.CRAMO_ORD
+                    LIMIT 50
+					</code></pre>
                 </section>
+                </section>
+            </section>
+            <section>
+
             </section>
 
             <section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
@@ -316,6 +532,11 @@
                 <section><h2>一些问题</h2></section>
                 <section>
                     <h4>乱码</h4>
+                    <p>查看MySQL数据库服务器和数据库字符集 show variables like '%char%';</p>
+                    <p>查看表的字符集 show table status from mysql_db like '%tb_name%'</p>
+                    <p>查看表中所有列的字符集 show full columns from tb_name;</p>
+                    <p>修改表的字符集 ALTER TABLE tb_name CONVERT TO CHARACTER SET gb2312;</p>
+                    <p>修改字段字符集 alter table tb_name modify column tb_column varchar(30) character set gb2312 not null;</p>
                 </section>
                 <section>
                     <h4>死锁</h4>

@@ -1,4 +1,4 @@
-1、数据库选择（mysql、oracle）
+﻿1、数据库选择（mysql、oracle）
 
 
 
@@ -40,3 +40,28 @@ https://juejin.im/entry/575620b1128fe10056efc166	21 条最佳 MySQL 性能优化
 https://juejin.im/entry/590a973561ff4b00698921b8	MySQL 索引及查询优化总结
 
 http://blog.csdn.net/anxpp/article/details/51284106 数据类型
+
+
+项目中：
+and or as
+distinct 
+group by
+order by asc desc
+in
+join left join right join
+date_format
+now()
+time_to_sec
+case when then else end
+min max
+sum
+length
+count
+concat
+ROUND(coalesce(sum(BONUS_NET_PAY),0),2)
+coalesce(sum(BRECORD_INCOME), 0)
+IFNULL(SUM(aa.PAY_PRICE),0)
+DATEDIFF(BUSINESS_END_DATE,now())
+limit
+分页函数
+
