@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
 
-        <title>reveal.js – The HTML Presentation Framework</title>
+        <title>柳猿猿的课件</title>
 
         <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
         <meta name="author" content="Hakim El Hattab">
@@ -273,6 +273,10 @@
                         WHEN [val n] THEN [result n]
                         ELSE [default result]
                         END
+
+                        coalesce(sum(BRECORD_INCOME), 0)
+
+                        IFNULL(SUM(aa.PAY_PRICE),0)
 					</code></pre>
                 </section>
                 <section>
@@ -305,7 +309,9 @@
                         </ol>
                     </div>
                 </section>
-                <section>
+                </section>
+            </section>
+            <section data-transition="slide" data-background-transition="zoom">
                     <pre><code class="hljs" data-trim contenteditable>
                       SELECT
                       HR_UNID AS hrUnid,
@@ -515,37 +521,14 @@
                       co.CRAMO_ORD
                     LIMIT 50
 					</code></pre>
-                </section>
-                </section>
             </section>
-            <section>
-
-            </section>
-
             <section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
                 <h2>Mysql优化</h2>
                 <div>参考：</div>
                 <a href="https://juejin.im/entry/575620b1128fe10056efc166">https://juejin.im/entry/575620b1128fe10056efc166</a>
                 <a href="https://juejin.im/entry/590a973561ff4b00698921b8">https://juejin.im/entry/590a973561ff4b00698921b8</a>
+                <a href="https://juejin.im/entry/57a2a7e86be3ff006510907d">https://juejin.im/entry/57a2a7e86be3ff006510907d</a>
             </section>
-            <section data-transition="slide" data-background="#3CB371" data-background-transition="zoom">
-                <section><h2>一些问题</h2></section>
-                <section>
-                    <h4>乱码</h4>
-                    <p>查看MySQL数据库服务器和数据库字符集 show variables like '%char%';</p>
-                    <p>查看表的字符集 show table status from mysql_db like '%tb_name%'</p>
-                    <p>查看表中所有列的字符集 show full columns from tb_name;</p>
-                    <p>修改表的字符集 ALTER TABLE tb_name CONVERT TO CHARACTER SET gb2312;</p>
-                    <p>修改字段字符集 alter table tb_name modify column tb_column varchar(30) character set gb2312 not null;</p>
-                </section>
-                <section>
-                    <h4>死锁</h4>
-                </section>
-                <section>
-                    <h4>sql注入</h4>
-                </section>
-            </section>
-
             <!-- Example of nested vertical slides -->
 
             <section>

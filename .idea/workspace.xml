@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="108df430-4791-48b1-b372-2c6b363132a4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mysql.html" afterPath="$PROJECT_DIR$/mysql.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ppt.txt" afterPath="$PROJECT_DIR$/ppt.txt" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,9 +17,11 @@
       <file leaf-file-name="mysql.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mysql.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="148">
-              <caret line="540" column="25" lean-forward="true" selection-start-line="540" selection-start-column="25" selection-end-line="540" selection-end-column="25" />
-              <folding />
+            <state relative-caret-position="456">
+              <caret line="531" column="54" lean-forward="true" selection-start-line="531" selection-start-column="54" selection-end-line="531" selection-end-column="54" />
+              <folding>
+                <element signature="n#style#0;n#div#1;n#section#18;n#section#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -29,8 +29,8 @@
       <file leaf-file-name="ppt.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ppt.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="237">
-              <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="37" />
+            <state relative-caret-position="61">
+              <caret line="20" column="15" lean-forward="true" selection-start-line="20" selection-start-column="15" selection-end-line="20" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -529,15 +529,15 @@
       <option name="presentableId" value="Default" />
       <updated>1494475108799</updated>
       <workItem from="1494475110299" duration="324000" />
-      <workItem from="1494558028165" duration="4159000" />
+      <workItem from="1494558028165" duration="9516000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4483000" />
+    <option name="totallyTimeSpent" value="9840000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="1924" height="1057" extended-state="0" />
+    <frame x="-7" y="0" width="1924" height="1057" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -584,17 +584,19 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/ppt.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="237">
-          <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="37" />
+        <state relative-caret-position="61">
+          <caret line="20" column="15" lean-forward="true" selection-start-line="20" selection-start-column="15" selection-end-line="20" selection-end-column="15" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mysql.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="540" column="25" lean-forward="true" selection-start-line="540" selection-start-column="25" selection-end-line="540" selection-end-column="25" />
-          <folding />
+        <state relative-caret-position="456">
+          <caret line="531" column="54" lean-forward="true" selection-start-line="531" selection-start-column="54" selection-end-line="531" selection-end-column="54" />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#section#18;n#section#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
