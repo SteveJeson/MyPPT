@@ -521,6 +521,55 @@
                       co.CRAMO_ORD
                     LIMIT 50
 					</code></pre>
+                <h4>sql练习网站：</h4>
+                <div><a href="http://sqlzoo.net">http://sqlzoo.net</a></div>
+            </section>
+            <section data-transition="slide" data-background="#afb4db" data-background-transition="zoom">
+                <section>
+                    <h2>了解mysql索引</h2>
+                    <div style="font-size: 20px;">
+                        <ul>
+                            <li>索引是对记录集的多个字段进行排序的方法。在一张表中为一个字段创建一个索引，将创建另外一个数据结构，包含字段数值以及指向相关记录的指针，然后对这个索引结构进行排序，允许在该数据上进行二分法排序。</li>
+                            <li>副作用是索引需要额外的磁盘空间，对于MyISAM引擎而言，这些索引是被统一保存在一张表中的，这个文件将很快到达底层文件系统所能够支持的大小限制，如果很多字段都建立了索引的话。</li>
+                        </ul>
+                    </div>
+                </section>
+                <section>
+                    <h2>mysql索引分类</h2>
+                    <div style="font-size: 20px;">
+                        <ul>
+                            <li>普通索引(INDEX)：最基本的索引，没有任何限制<br>
+                                ALTER TABLE `table_name` ADD INDEX index_name (`col`)
+                            </li>
+                            <li>唯一索引(UNIQUE)：与"普通索引"类似，不同的就是：索引列的值必须唯一，但允许有空值。<br>
+                                ALTER TABLE `table_name` ADD UNIQUE (`col`)
+                            </li>
+                            <li>主键索引(PRIMARY KEY)：它 是一种特殊的唯一索引，不允许有空值。<br>
+                                ALTER TABLE `table_name` ADD PRIMARY KEY ( `col` )
+                            </li>
+                            <li>全文索引(FULLTEXT)：仅可用于 MyISAM 表，针对较大的数据，生成全文索引很耗时好空间。<br>
+                                ALTER TABLE `table_name` ADD FULLTEXT ( `col` )
+                            </li>
+                            <li>组合索引：为了更多的提高mysql效率可建立组合索引，遵循”最左前缀“原则。
+                                创建复合索引时应该将最常用（频率）作限制条件的列放在最左边，依次递减。<br>
+                                ALTER TABLE `table_name` ADD INDEX index_name (`col1`, `col2`, `col3` )
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section>
+                    <h2>建立索引的原则</h2>
+                    <div style="font-size: 20px;">
+                        <ol>
+                            <li>在经常用作过滤器的字段上建立索引；</li>
+                            <li>在SQL语句中经常进行GROUP BY、ORDER BY的字段上建立索引；</li>
+                            <li>在不同值较少的字段上不必要建立索引，如性别字段；</li>
+                            <li>对于经常存取的列避免建立索引；</li>
+                            <li>用于联接的列（主健/外健）上建立索引；</li>
+                            <li>在经常存取的多个列上建立复合索引，但要注意复合索引的建立顺序要按照使用的频度来确定；</li>
+                        </ol>
+                    </div>
+                </section>
             </section>
             <section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
                 <h2>Mysql优化</h2>
@@ -532,7 +581,7 @@
             <!-- Example of nested vertical slides -->
 
             <section>
-                <section><h1>结束啦！去<a href="https://juejin.im/">掘金</a></h1></section>
+                <section><h1>结束啦！去<a href="https://juejin.im/">挖金子</a></h1></section>
             </section>
 
             </section>
